@@ -397,7 +397,8 @@ console.log(Object.isExtensible(aa)) //true
 
 used to define the single enteries in an object. 
 1. using this create the entries for the object , make thema s uneditable 
-2. if create entries using defineProperty , by default enumerable:false. if make enumerable: true then only entries show explicitily  
+2. if create entries using defineProperty , by default enumerable:false. if make enumerable: true then only entries show explicitily   
+3.configurable - can update the property and cant delete the property
 
 ```JS 
 //    (object name, property name, values)
@@ -417,8 +418,19 @@ used to define the single enteries in an object.
 //   name: 'Deepa',
 //   job: 'Full stack developer',
 //   hobby: 'For now learning JS'
-// }
-```
+// } 
+
+
+Object.defineProperty(a,"job",{configurable:false}) 
+   delete a.job 
+   console.log(a) 
+
+   // { name: 'Deepa', job: 'Developer' } 
+``` 
+
+if configurable:fasle dont allow to delete the property 
+
+
 12.Object.defineProperties() 
 
 using defineProperty can do here also for multiple entries  
@@ -444,5 +456,64 @@ using defineProperty can do here also for multiple entries
     
     console.log(a) //
 // { name: 'May', job: 'Developer', rate: 908 } 
+
+```
+
+How to create custom seal function? 
+
+seal - 
+allow edit , dont allow - create new entry and delete. 
+
+```JS
+    let a ={
+        name:"Deepa", 
+        job:"Developer",
+    }
+   function customSeal(a){
+    let keys = Object.keys(a) 
+    for(let i =0; i<keys.length;i++){
+         Object.defineProperty(a,keys[i],{configurable:false})
+    } 
+    Object.preventExtensions(a) 
+    
+   }  
+
+   customSeal(a) 
+   a.name= "May"
+   delete a.job 
+   a.rate = 909 
+   console.log(a)
+//Output 
+// { name: 'May', job: 'Developer' }
+
+```
+
+How to create custom freeze function? 
+
+freeze - 
+allow read, dont allow - create new entry and delete,edit. 
+
+
+```JS
+    let a ={
+        name:"Deepa", 
+        job:"Developer",
+    }
+   function customFreeze(a){
+    let keys = Object.keys(a) 
+    for(let i =0; i<keys.length;i++){
+         Object.defineProperty(a,keys[i],{configurable:false,writable:false})
+    } 
+    Object.preventExtensions(a) 
+    
+   }  
+
+   customFreeze(a) 
+   a.name= "May"
+   delete a.job 
+   a.rate = 909 
+   console.log(a)
+//Output 
+// { name: 'Deepa', job: 'Developer' }
 
 ```
